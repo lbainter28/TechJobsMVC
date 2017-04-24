@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 using System.Text;
 
 namespace TechJobs.Models
@@ -8,6 +9,7 @@ namespace TechJobs.Models
     class JobData
     {
         static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
+
         static bool IsDataLoaded = false;
 
         public static List<Dictionary<string, string>> FindAll()
@@ -15,7 +17,11 @@ namespace TechJobs.Models
             LoadData();
 
             // Bonus mission: return a copy
-            return new List<Dictionary<string, string>>(AllJobs);
+            // return new List<Dictionary<string, string>>(AllJobs);
+
+            List<Dictionary<string, string>> allJobsCopy = AllJobs.ToList();
+            allJobsCopy.Sort(new JobComparer("name"));
+            return allJobsCopy;
         }
 
         /*
@@ -28,9 +34,9 @@ namespace TechJobs.Models
 
             List<string> values = new List<string>();
 
-            foreach (Dictionary<string, string> job in AllJobs)
+            foreach (Dictionary<string, string> row in AllJobs)
             {
-                string aValue = job[column];
+                string aValue = row[column];
 
                 if (!values.Contains(aValue))
                 {
